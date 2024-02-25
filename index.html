@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messenger Interface</title>
+<style>
+/* Your CSS styles here */
+</style>
+</head>
+<body>
+<div class="container">
+    <div id="chat-box" class="chat-box">
+        <!-- Chat messages will be dynamically added here -->
+    </div>
+    <div class="input-box">
+        <input id="data" type="text" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script>
+var socket = new WebSocket("ws://localhost:3000");
+
+socket.onmessage = function(event) {
+    var data = JSON.parse(event.data);
+    var message = data.message;
+    var chatBox = document.getElementById('chat-box');
+    var messageDiv = document.createElement('div');
+    messageDiv.textContent = message;
+    chatBox.appendChild(messageDiv);
+};
+
+function sendMessage() {
+    var data = document.getElementById("data").value;
+    socket.send(JSON.stringify({ message: data }));
+    document.getElementById("data").value = '';
+}
+</script>
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Handle incoming message (not WebSocket)
+    $message = $_POST['message'];
+    // Process the message as needed
+    // For demonstration, you could store it in a file or database
+}
+?>
+</body>
+</html>
